@@ -1,0 +1,22 @@
+version: 2.1
+jobs:
+  deploy:
+    docker:
+      - image: circleci/node
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: npm install
+      - run: docker login -u ${DOCKER_LOGIN} -p ${DOCKER_PASSWORD}
+      - run: ./docker_deploy.sh escaletech/tog
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - deploy:
+          filters:
+            tags:
+              only: /^v.*/
+            branches:
+              ignore: /.*/

@@ -3,20 +3,40 @@ const cookieParser = require('cookie-parser')
 const EventEmitter = require('events')
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
+const BearerStrategy = require('passport-http-bearer').Strategy
+const redis = require('redis')
+const { promisify } = require('util')
 
 const config = require('../services/config')
+
+const redisClient = redis.createClient(config.redisUrl)
+redisClient.on('error', err => console.log('error') || console.error(err))
 
 passport.use(new GoogleStrategy({
   clientID: config.oauthClientId,
   clientSecret: config.oauthClientSecret,
   callbackURL: '/auth/google/callback'
 }, (accessToken, refreshToken, profile, verify) => {
-  verify(null, { accessToken })
+  const key = `tog:user:${accessToken}`
+  const email = profile._json.email
+  return promisify(redisClient.set).bind(redisClient)(key, email)
+    .then(() => promisify(redisClient.expire).bind(redisClient)(key, 60 * 60 * 24) /* 24 hours */)
+    .then(() => verify(null, { accessToken, email }))
+}))
+
+passport.use(new BearerStrategy((token, done) => {
+  return promisify(redisClient.get).bind(redisClient)(`tog:user:${token}`)
+    .then(email => email ? done(null, { email }) : done(null, null))
+    .catch(err => done(err))
 }))
 
 const broker = new EventEmitter()
 
 const authenticate = passport.authenticate('google', { session: false, failureRedirect: '/auth/login' })
+const scope = [
+  'https://www.googleapis.com/auth/plus.login',
+  'https://www.googleapis.com/auth/userinfo.email'
+]
 
 module.exports = express.Router()
   .get('/login',
@@ -26,7 +46,7 @@ module.exports = express.Router()
       res.cookie('redirect_url', rd, { maxAge }) /* 5 minutes */
       return next()
     },
-    passport.authenticate('google', { session: false, scope: ['https://www.googleapis.com/auth/plus.login'] }))
+    passport.authenticate('google', { session: false, scope }))
 
   .get('/google/callback', authenticate, cookieParser(),
     ({ cookies, user }, res) => {

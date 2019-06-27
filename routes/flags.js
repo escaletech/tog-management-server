@@ -2,6 +2,7 @@ const express = require('express')
 const passport = require('passport')
 const TogClient = require('tog')
 const R = require('ramda')
+const bodyParser = require('body-parser')
 
 const { redisUrl } = require('../services/config')
 
@@ -24,5 +25,13 @@ module.exports = express.Router()
       .then(flag => flag !== undefined
         ? res.status(200).json({ namespace, name, state: flag })
         : res.status(404).json({ message: 'flag not found' }))
+      .catch(next)
+  })
+
+  .put('/:namespace/:name', authenticate, bodyParser.json(), (req, res, next) => {
+    const { namespace, name } = req.params
+    const { state, description } = req.body
+    return client.setFlag(namespace, name, state, description)
+      .then(() => res.status(200).json({ namespace, name, state, description }))
       .catch(next)
   })

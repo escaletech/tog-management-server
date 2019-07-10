@@ -5,6 +5,7 @@ const bodyParser = require('body-parser')
 const Joi = require('@hapi/joi')
 
 const { redisUrl } = require('../services/config')
+const audit = require('../services/audit')
 
 const authenticate = passport.authenticate('bearer', { session: false })
 
@@ -46,5 +47,6 @@ module.exports = express.Router().use(authenticate)
 
     return client.saveExperiment(exp)
       .then(() => res.status(200).json(exp))
+      .then(() => audit(req, 'experiments', { namespace, name, weight, flags }))
       .catch(next)
   })

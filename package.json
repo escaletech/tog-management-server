@@ -10,6 +10,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "@hapi/joi": "^15.1.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.4",
     "dotenv": "^8.0.0",
@@ -20,5 +21,8 @@
     "ramda": "^0.26.1",
     "redis": "^2.8.0",
     "tog": "git+ssh://git@github.com/escaletech/tog-node.git"
+  },
+  "devDependencies": {
+    "@types/hapi__joi": "^15.0.2"
   }
 }

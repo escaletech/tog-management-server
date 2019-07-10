@@ -19,6 +19,11 @@ passport.use(new GoogleStrategy({
 }, (accessToken, refreshToken, profile, verify) => {
   const key = `tog:user:${accessToken}`
   const email = profile._json.email
+
+  if (!isValidEmail(email)) {
+    return verify(`User ${email} is unauthorized`)
+  }
+
   return promisify(redisClient.set).bind(redisClient)(key, email)
     .then(() => promisify(redisClient.expire).bind(redisClient)(key, 60 * 60 * 24) /* 24 hours */)
     .then(() => verify(null, { accessToken, email }))
@@ -29,6 +34,14 @@ passport.use(new BearerStrategy((token, done) => {
     .then(email => email ? done(null, { email }) : done(null, null))
     .catch(err => done(err))
 }))
+
+/**
+ * @param {string} email
+ */
+function isValidEmail (email) {
+  return config.domainWhitelist.length === 0 ||
+    config.domainWhitelist.some(domain => email.endsWith('@' + domain))
+}
 
 const broker = new EventEmitter()
 

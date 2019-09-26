@@ -4,4 +4,4 @@ WORKDIR /app
 
 COPY . .
 
-CMD ["node", "index.js"]
+CMD ["npm", "start"]

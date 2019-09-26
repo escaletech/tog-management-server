@@ -1,6 +1,6 @@
 const express = require('express')
 const passport = require('passport')
-const TogClient = require('tog')
+const TogClient = require('tog-node')
 const R = require('ramda')
 const bodyParser = require('body-parser')
 

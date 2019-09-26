@@ -22,7 +22,7 @@
     "pino": "^5.12.6",
     "ramda": "^0.26.1",
     "redis": "^2.8.0",
-    "tog": "git+ssh://git@github.com/escaletech/tog-node.git"
+    "tog-node": "^0.2.0"
   },
   "devDependencies": {
     "@types/hapi__joi": "^15.0.2"

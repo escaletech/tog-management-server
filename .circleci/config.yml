@@ -8,7 +8,7 @@ jobs:
       - setup_remote_docker
       - run: npm install
       - run: docker login -u ${DOCKER_LOGIN} -p ${DOCKER_PASSWORD}
-      - run: ./docker_deploy.sh escaletech/tog
+      - run: ./docker_deploy.sh escaletech/tog-management-server
 
 workflows:
   version: 2

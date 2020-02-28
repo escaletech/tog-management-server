@@ -22,7 +22,7 @@
     "pino": "^5.12.6",
     "ramda": "^0.26.1",
     "redis": "^2.8.0",
-    "tog-node": "^0.2.0"
+    "tog-node": "^0.3.2"
   },
   "devDependencies": {
     "@types/hapi__joi": "^15.0.2"

@@ -59,3 +59,12 @@ module.exports = express.Router().use(authenticate)
       .then(() => audit(req, 'flags', flag))
       .catch(next)
   })
+
+  .delete('/:namespace/:name', (req, res, next) => {
+    const { namespace, name } = req.params
+
+    return client.deleteFlag(namespace, name)
+      .then(deleted => deleted
+        ? res.status(204).end()
+        : res.status(404).json({ message: 'flag not found' }))
+  })

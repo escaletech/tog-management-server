@@ -68,3 +68,5 @@ module.exports = express.Router().use(authenticate)
         ? res.status(204).end()
         : res.status(404).json({ message: 'flag not found' }))
   })
+
+module.exports.quit = done => client.redis.redis.quit(done)

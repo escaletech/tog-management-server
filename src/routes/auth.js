@@ -4,12 +4,13 @@ const EventEmitter = require('events')
 const passport = require('passport')
 const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy
 const BearerStrategy = require('passport-http-bearer').Strategy
-const redis = require('redis')
-const { promisify } = require('util')
+const Redis = require('ioredis')
 
 const config = require('../services/config')
 
-const redisClient = redis.createClient(config.redisUrl)
+const redisClient = config.isRedisCluster
+  ? new Redis.Cluster([config.redisUrl])
+  : new Redis(config.redisUrl)
 redisClient.on('error', err => console.log('error') || console.error(err))
 
 passport.use(new GoogleStrategy({
@@ -24,13 +25,12 @@ passport.use(new GoogleStrategy({
     return verify(`User ${email} is unauthorized`)
   }
 
-  return promisify(redisClient.set).bind(redisClient)(key, email)
-    .then(() => promisify(redisClient.expire).bind(redisClient)(key, 60 * 60 * 24) /* 24 hours */)
+  return redisClient.set(key, email, 'EX', 60 * 60 * 24)
     .then(() => verify(null, { accessToken, email }))
 }))
 
 passport.use(new BearerStrategy((token, done) => {
-  return promisify(redisClient.get).bind(redisClient)(`tog:user:${token}`)
+  return redisClient.get(`tog:user:${token}`)
     .then(email => email ? done(null, { email }) : done(null, null))
     .catch(err => done(err))
 }))
@@ -63,8 +63,8 @@ module.exports = express.Router()
 
   .get('/google/callback', authenticate, cookieParser(),
     ({ cookies, user }, res) => {
-      broker.emit(cookies['cli_token'], user.accessToken)
-      return res.redirect(cookies['redirect_url'])
+      broker.emit(cookies.cli_token, user.accessToken)
+      return res.redirect(cookies.redirect_url)
     })
 
   .get('/cli-return', (req, res, next) => {
@@ -85,7 +85,7 @@ module.exports = express.Router()
     res.set({
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
-      'Connection': 'keep-alive'
+      Connection: 'keep-alive'
     })
 
     res.write('retry: 10000\n\n')

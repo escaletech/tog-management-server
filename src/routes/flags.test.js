@@ -20,9 +20,9 @@ const app = express().use(router)
 
 const client = new FlagClient(redisUrl)
 
-afterAll(done => client.redis.redis.quit(done))
+afterAll(() => client.redis.quit())
 afterAll(router.quit)
-afterEach(done => client.redis.redis.flushdb(done))
+afterEach(() => client.redis.flushdb())
 
 describe('flags api', () => {
   describe('list flags', () => {

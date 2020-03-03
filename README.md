@@ -19,6 +19,7 @@ $ docker run -d -p 3000:3000 \
 * `OAUTH_CLIENT_ID` - Client ID for OAuth 2 authentication (**required**, see [Authentication](#authentication))
 * `OAUTH_CLIENT_SECRET` - Client secret for OAuth 2 authentication (**required**, see [Authentication](#authentication))
 * `REDIS_URL` - URL for the Redis server used by Tog (**required**, e.g. `redis://my-redis-server.com`)
+* `REDIS_CLUSTER` - Set to `true` if Redis URL is a cluster (**optional**, default: `false`)
 * `DOMAIN_WHITELIST` - If specified, only users from these domains will be allowed (**optional**, e.g. `escale.com.br`)
 
 ### Authentication

@@ -2,6 +2,7 @@ module.exports = {
   oauthClientId: getEnv('OAUTH_CLIENT_ID'),
   oauthClientSecret: getEnv('OAUTH_CLIENT_SECRET'),
   redisUrl: getEnv('REDIS_URL'),
+  isRedisCluster: process.env.REDIS_CLUSTER === 'true',
   domainWhitelist: getList('DOMAIN_WHITELIST')
 }
 

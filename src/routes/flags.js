@@ -4,12 +4,12 @@ const { FlagClient, FlagNotFoundError } = require('tog-node')
 const bodyParser = require('body-parser')
 const Joi = require('@hapi/joi')
 
-const { redisUrl } = require('../services/config')
+const { redisUrl, isRedisCluster } = require('../services/config')
 const audit = require('../services/audit')
 
 const authenticate = passport.authenticate('bearer', { session: false })
 
-const client = new FlagClient(redisUrl)
+const client = new FlagClient(redisUrl, { cluster: isRedisCluster })
 
 const schema = Joi.object().keys({
   description: Joi.string(),
@@ -69,4 +69,4 @@ module.exports = express.Router().use(authenticate)
         : res.status(404).json({ message: 'flag not found' }))
   })
 
-module.exports.quit = done => client.redis.redis.quit(done)
+module.exports.quit = () => client.redis.quit()

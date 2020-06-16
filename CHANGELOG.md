@@ -2,6 +2,17 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [0.4.0](https://github.com/escaletech/tog-management-server/compare/v0.3.2...v0.4.0) (2020-06-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* This change adopts version 0.3 of Tog spec, which breaks compatibility with old flags.
+
+### Features
+
+* upgrade client for 0.3 spec ([40691b3](https://github.com/escaletech/tog-management-server/commit/40691b3235e489d59a0f12153c6a6576f81325e8))
+
 ### [0.3.2](https://github.com/escaletech/tog-management-server/compare/v0.3.1...v0.3.2) (2020-03-03)
 
 

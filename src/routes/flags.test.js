@@ -39,7 +39,7 @@ describe('flags api', () => {
         .get('/test_ns')
         .set('Authorization', 'Bearer abc123')
         .expect(200)
-        .then(res => expect(res.body).toEqual(flags))
+        .then(res => expect(res.body).toMatchObject(flags))
     })
 
     test('returns empty', () => {
@@ -63,7 +63,7 @@ describe('flags api', () => {
         .get('/test_ns/one')
         .set('Authorization', 'Bearer abc123')
         .expect(200)
-        .then(res => expect(res.body).toEqual({
+        .then(res => expect(res.body).toMatchObject({
           namespace: 'test_ns',
           name: 'one',
           rollout: [{ value: true }]
@@ -102,7 +102,7 @@ describe('flags api', () => {
       })
 
       const flag = await client.getFlag('test_ns', 'one')
-      expect(flag).toEqual(res.body)
+      expect(flag).toMatchObject(res.body)
     })
 
     test('creates inexistent flag', async () => {
@@ -119,7 +119,7 @@ describe('flags api', () => {
       })
 
       const flag = await client.getFlag('test_ns', 'one')
-      expect(flag).toEqual(res.body)
+      expect(flag).toMatchObject(res.body)
     })
 
     test('returns 422 for invalid payload', async () => {

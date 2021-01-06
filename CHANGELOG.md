@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.1](https://github.com/escaletech/tog-management-server/compare/v0.4.0...v0.4.1) (2021-01-06)
+
+
+### Bug Fixes
+
+* upgrade vulnerable dependencies ([60f561b](https://github.com/escaletech/tog-management-server/commit/60f561bab70075970e32f48d40d1419ea5c10342))
+
 ## [0.4.0](https://github.com/escaletech/tog-management-server/compare/v0.3.2...v0.4.0) (2020-06-16)
 
 

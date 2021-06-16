@@ -8,13 +8,13 @@ jobs:
       - checkout
       - restore_cache:
           keys:
-            - v1-dependencies-{{ checksum "package-lock.json" }}
-            - v1-dependencies-
+            - v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
+            - v2-dependencies-
       - run: npm install
       - save_cache:
           paths:
             - node_modules
-          key: v1-dependencies-{{ checksum "package-lock.json" }}
+          key: v2-dependencies-{{ checksum "npm-shrinkwrap.json" }}
       - run:
           name: Run tests
           command: npm test

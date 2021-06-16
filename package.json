@@ -24,7 +24,7 @@
     "passport-http-bearer": "^1.0.1",
     "pino": "^5.12.6",
     "ramda": "^0.26.1",
-    "tog-node": "^0.4.0"
+    "tog-node": "^0.4.3"
   },
   "devDependencies": {
     "@types/hapi__joi": "^15.0.2",

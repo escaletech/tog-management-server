@@ -1,4 +1,8 @@
 version: 2.1
+
+orbs:
+  gh-release: escaletech/gh-conventional-release@0.1
+
 jobs:
   test:
     docker:
@@ -29,19 +33,26 @@ jobs:
       - run: docker login -u ${DOCKER_LOGIN} -p ${DOCKER_PASSWORD}
       - run: ./docker_deploy.sh escaletech/tog-management-server
 
+ci_only: &ci_only
+  filters:
+    tags: { ignore: /.*/ }
+
+production_only: &production_only
+  filters:
+    branches: { ignore: /.*/ }
+    tags: { only: /^v.*/ }
+
 workflows:
   version: 2
   ci:
     jobs:
       - test:
-          filters:
-            tags:
-              ignore: /.*/
+          <<: *ci_only
   release:
     jobs:
       - deploy:
-          filters:
-            tags:
-              only: /^v.*/
-            branches:
-              ignore: /.*/
+          <<: *production_only
+      - gh-release/create-release:
+          context: github-create-release
+          requires: [deploy]
+          <<: *production_only

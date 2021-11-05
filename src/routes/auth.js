@@ -16,7 +16,7 @@ redisClient.on('error', err => console.log('error') || console.error(err))
 passport.use(new GoogleStrategy({
   clientID: config.oauthClientId,
   clientSecret: config.oauthClientSecret,
-  callbackURL: '/auth/google/callback'
+  callbackURL: config.oauthCallbackUrl
 }, (accessToken, refreshToken, profile, verify) => {
   const key = `tog:user:${accessToken}`
   const email = profile._json.email

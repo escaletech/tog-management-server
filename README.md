@@ -10,6 +10,7 @@ Server application that provides management of [Tog](https://github.com/escalete
 $ docker run -d -p 3000:3000 \
   --env 'OAUTH_CLIENT_ID=XYZ' \
   --env 'OAUTH_CLIENT_SECRET=XYZ' \
+  --env 'OAUTH_CALLBACK_URL=https://<DOMAIN>/auth/google/callback'
   --env 'REDIS_URL=redis://your-redis:6379' \
   escaletech/tog-management-server
 ```
@@ -18,6 +19,7 @@ $ docker run -d -p 3000:3000 \
 
 * `OAUTH_CLIENT_ID` - Client ID for OAuth 2 authentication (**required**, see [Authentication](#authentication))
 * `OAUTH_CLIENT_SECRET` - Client secret for OAuth 2 authentication (**required**, see [Authentication](#authentication))
+* `OAUTH_CALLBACK_URL` - Redirect uri for OAuth 2 authentication (**required**, see [RedirectURI](https://developers.google.com/identity/protocols/oauth2/javascript-implicit-flow#redirecting))
 * `REDIS_URL` - URL for the Redis server used by Tog (**required**, e.g. `redis://my-redis-server.com`)
 * `REDIS_CLUSTER` - Set to `true` if Redis URL is a cluster (**optional**, default: `false`)
 * `DOMAIN_WHITELIST` - If specified, only users from these domains will be allowed (**optional**, e.g. `escale.com.br`)

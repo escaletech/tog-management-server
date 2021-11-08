@@ -11,6 +11,7 @@ passport.use(new BearerStrategy((token, done) => {
 process.env.OAUTH_CLIENT_ID = '_'
 process.env.OAUTH_CLIENT_SECRET = '_'
 process.env.DOMAIN_WHITELIST = '_'
+process.env.OAUTH_CALLBACK_URL= '_'
 
 const redisUrl = 'redis://127.0.0.1:6379'
 process.env.REDIS_URL = redisUrl

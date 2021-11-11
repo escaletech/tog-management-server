@@ -1,6 +1,8 @@
 version: 2.1
 
 orbs:
+  aws-ecr: circleci/aws-ecr@7.0
+  aws-eks: circleci/aws-eks@1.1
   gh-release: escaletech/gh-conventional-release@0.1
 
 jobs:
@@ -23,16 +25,6 @@ jobs:
           name: Run tests
           command: npm test
 
-  deploy:
-    docker:
-      - image: circleci/node
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run: npm install
-      - run: docker login -u ${DOCKER_LOGIN} -p ${DOCKER_PASSWORD}
-      - run: ./docker_deploy.sh escaletech/tog-management-server
-
 ci_only: &ci_only
   filters:
     tags: { ignore: /.*/ }
@@ -50,9 +42,15 @@ workflows:
           <<: *ci_only
   release:
     jobs:
-      - deploy:
+      - aws-ecr/build-and-push-image:
+          context: eks-applications
+          repo: tog-management-server
+          create-repo: true
+          attach-workspace: true
+          tag: ${CIRCLE_TAG#v},latest
+          dockerfile: Dockerfile
           <<: *production_only
       - gh-release/create-release:
           context: github-create-release
-          requires: [deploy]
+          requires: [aws-ecr/build-and-push-image]
           <<: *production_only

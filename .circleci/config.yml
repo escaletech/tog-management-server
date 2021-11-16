@@ -42,6 +42,8 @@ workflows:
           <<: *ci_only
   release:
     jobs:
+      - test:
+          <<: *production_only
       - aws-ecr/build-and-push-image:
           context: eks-applications
           repo: tog-management-server

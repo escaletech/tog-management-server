@@ -24,6 +24,9 @@ jobs:
       - run:
           name: Run tests
           command: npm test
+      - persist_to_workspace:
+          root: .
+          paths: [node_modules]
 
 ci_only: &ci_only
   filters:
@@ -51,6 +54,7 @@ workflows:
           attach-workspace: true
           tag: ${CIRCLE_TAG#v},latest
           dockerfile: Dockerfile
+          requires: [test]
           <<: *production_only
       - gh-release/create-release:
           context: github-create-release

@@ -57,7 +57,7 @@ workflows:
           repo: tog-management-server
           create-repo: true
           attach-workspace: true
-          tag: ${CIRCLE_TAG#v},latest
+          tag: ${CIRCLE_SHA1:0:7},master
           dockerfile: Dockerfile
           requires: [install-and-test]
           <<: *staging_only

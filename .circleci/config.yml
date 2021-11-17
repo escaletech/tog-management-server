@@ -6,7 +6,7 @@ orbs:
   gh-release: escaletech/gh-conventional-release@0.1
 
 jobs:
-  test:
+  install-and-test:
     docker:
       - image: circleci/node:10
       - image: circleci/redis:4-alpine
@@ -32,6 +32,11 @@ ci_only: &ci_only
   filters:
     tags: { ignore: /.*/ }
 
+staging_only: &staging_only
+  filters:
+    branches: { only: [master] }
+    tags: { ignore: /.*/ }
+
 production_only: &production_only
   filters:
     branches: { ignore: /.*/ }
@@ -41,11 +46,25 @@ workflows:
   version: 2
   ci:
     jobs:
-      - test:
+      - install-and-test:
           <<: *ci_only
+  staging:
+    jobs:
+      - install-and-test:
+          <<: *staging_only
+      - aws-ecr/build-and-push-image:
+          context: eks-apps-escale-staging
+          repo: tog-management-server
+          create-repo: true
+          attach-workspace: true
+          tag: ${CIRCLE_TAG#v},latest
+          dockerfile: Dockerfile
+          requires: [install-and-test]
+          <<: *staging_only
+
   release:
     jobs:
-      - test:
+      - install-and-test:
           <<: *production_only
       - aws-ecr/build-and-push-image:
           context: eks-applications
@@ -54,7 +73,7 @@ workflows:
           attach-workspace: true
           tag: ${CIRCLE_TAG#v},latest
           dockerfile: Dockerfile
-          requires: [test]
+          requires: [install-and-test]
           <<: *production_only
       - gh-release/create-release:
           context: github-create-release

@@ -35,7 +35,7 @@ ci_only: &ci_only
 staging_only: &staging_only
   filters:
     branches: { only: [master] }
-    tags: { ignore: /.*/ }
+    tags: { ignore: /^v.*/ }
 
 production_only: &production_only
   filters:

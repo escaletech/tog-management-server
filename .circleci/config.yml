@@ -35,7 +35,7 @@ ci_only: &ci_only
 staging_only: &staging_only
   filters:
     branches: { only: [master] }
-    tags: { ignore: /.*/ }
+    tags: { ignore: /^v.*/ }
 
 production_only: &production_only
   filters:
@@ -57,7 +57,7 @@ workflows:
           repo: tog-management-server
           create-repo: true
           attach-workspace: true
-          tag: ${CIRCLE_SHA1:0:7},master
+          tag: ${CIRCLE_SHA1:0:7},dev
           dockerfile: Dockerfile
           requires: [install-and-test]
           <<: *staging_only
